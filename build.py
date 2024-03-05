@@ -83,8 +83,8 @@ def buildProbabilities(data):
     np.save('./data/SpamProbabilities', spamProb)
 
 if __name__ == "__main__":
-    data = load_data("./data/SMSSpamCollection")
-    if(len(sys.argv) == 2):
+    data = load_data(sys.argv[0])
+    if(len(sys.argv) == 3):
         buildProbabilities(data[sys.argv[0]:sys.argv[1]])
     else:
         buildProbabilities(data)
