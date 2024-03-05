@@ -60,7 +60,7 @@ def processMessages(vocab, messages):
     return newMessages
 
 
-def computeProbabilities(data):
+def buildProbabilities(data):
     trainLabels = data[:,0] == 'spam'
     rawTrainMessages = data[:,1]
 
@@ -76,12 +76,13 @@ def computeProbabilities(data):
     spamSum = trainMessages[trainLabels == 1].sum(axis=0)
     spamProb = hamSum / np.sum(trainLabels == 1)
     
-    # Returns a 2 x vocab.len matrix where first row is P(X | Y = ham) for each vocab war
-    # 2nd row is P(X | Y = spam)
-    return np.vstack((hamProb, spamProb))
+    # Build
+    np.save('./data/Vocab', vocabDict)
+    np.save('./data/HamProbabilities', hamProb)
+    np.save('./data/SpamProbabilities', spamProb)
 
-data = load_data("./data/SMSSpamCollection")
-computeProbabilities(data)
+if __name__ == "__main__": 
+    data = load_data("./data/SMSSpamCollection")
+    buildProbabilities(data)
 
-
-# Compute probabilites. Returns map where {word = probability of spam}
+    
