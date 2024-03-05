@@ -1,5 +1,5 @@
 '''
-    SMS Spam Detector using Naive Bayes Classifier 
+    SMS Spam Detector using Bernoulli Naive Bayes Classifier 
     https://github.com/ray16g
 '''
 
@@ -23,7 +23,7 @@ def load_data(path):
 # Tokenization
 # Remove stop words
 # Lemmatization
-
+    
 def preprocess(messages):
     
     messages = np.char.lower(messages)
@@ -43,13 +43,45 @@ def preprocess(messages):
     
     return messages
 
-data = load_data("./data/SMSSpamCollection")
-spamLabels = data[:,0]
-smsMessages = data[:,1]
 
-# smsMessages is a list of words
-smsMessages = preprocess(smsMessages)
+def createVocabDict(messages):
+    # Return a dict where [word = index]
+    vocab = set(messages.sum())
+    return dict([(v,i) for i, v in enumerate(vocab)])
 
+def processMessages(vocab, messages):
+    # Return 2d matrix where newMessages[x] = array where each word is marked true or false depending on if it appears
+    newMessages = np.array([[False]*len(vocab)]*len(messages))
+ 
+    for x in range(len(messages)):
+        for y in messages[x]:
+            newMessages[x][vocab[y]] = True
     
+    return newMessages
 
-print(smsMessages)
+
+def computeProbabilities(data):
+    trainLabels = data[:,0] == 'spam'
+    rawTrainMessages = data[:,1]
+
+    # smsMessages is an array of list of words
+    trainMessages = preprocess(rawTrainMessages)
+    vocabDict = createVocabDict(trainMessages)
+
+    trainMessages = processMessages(vocabDict, trainMessages)
+
+    hamSum = trainMessages[trainLabels == 0].sum(axis=0)
+    hamProb = hamSum / np.sum(trainLabels == 0)
+
+    spamSum = trainMessages[trainLabels == 1].sum(axis=0)
+    spamProb = hamSum / np.sum(trainLabels == 1)
+    
+    # Returns a 2 x vocab.len matrix where first row is P(X | Y = ham) for each vocab war
+    # 2nd row is P(X | Y = spam)
+    return np.vstack((hamProb, spamProb))
+
+data = load_data("./data/SMSSpamCollection")
+computeProbabilities(data)
+
+
+# Compute probabilites. Returns map where {word = probability of spam}
