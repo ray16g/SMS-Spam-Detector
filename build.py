@@ -6,6 +6,7 @@
 import numpy as np
 import nltk
 import string
+import sys
 
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords
@@ -71,18 +72,21 @@ def buildProbabilities(data):
     trainMessages = processMessages(vocabDict, trainMessages)
 
     hamSum = trainMessages[trainLabels == 0].sum(axis=0)
-    hamProb = hamSum / np.sum(trainLabels == 0)
+    hamProb = (hamSum + 1) / (np.sum(trainLabels == 0) + 2) # Laplace Smoothing (m+1/n+2)
 
     spamSum = trainMessages[trainLabels == 1].sum(axis=0)
-    spamProb = hamSum / np.sum(trainLabels == 1)
+    spamProb = (hamSum + 1) / (np.sum(trainLabels == 1) + 2)
     
     # Build
     np.save('./data/Vocab', vocabDict)
     np.save('./data/HamProbabilities', hamProb)
     np.save('./data/SpamProbabilities', spamProb)
 
-if __name__ == "__main__": 
+if __name__ == "__main__":
     data = load_data("./data/SMSSpamCollection")
-    buildProbabilities(data)
-
+    if(len(sys.argv) == 2):
+        buildProbabilities(data[sys.argv[0]:sys.argv[1]])
+    else:
+        buildProbabilities(data)
     
+
