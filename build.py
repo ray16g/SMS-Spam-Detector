@@ -53,10 +53,11 @@ def createVocabDict(messages):
 def processMessages(vocab, messages):
     # Return 2d matrix where newMessages[x] = array where each word is marked true or false depending on if it appears
     newMessages = np.array([[False]*len(vocab)]*len(messages))
- 
+    
     for x in range(len(messages)):
         for y in messages[x]:
-            newMessages[x][vocab[y]] = True
+            if(y in vocab):
+                newMessages[x][vocab[y]] = True
     
     return newMessages
 
@@ -75,8 +76,8 @@ def buildProbabilities(data):
     hamProb = (hamSum + 1) / (np.sum(trainLabels == 0) + 2) # Laplace Smoothing (m+1/n+2)
 
     spamSum = trainMessages[trainLabels == 1].sum(axis=0)
-    spamProb = (hamSum + 1) / (np.sum(trainLabels == 1) + 2)
-    
+    spamProb = (spamSum + 1) / (np.sum(trainLabels == 1) + 2)
+
     # Build
     np.save('./data/Vocab', vocabDict)
     np.save('./data/HamProbabilities', hamProb)
@@ -84,10 +85,12 @@ def buildProbabilities(data):
 
 if __name__ == "__main__":
     data = load_data(sys.argv[1])
+    slice1 = 0
+    slice2 = len(data)-1
+    if(len(sys.argv) == 4):
+        slice1 = int(sys.argv[2])
+        slice2 = int(sys.argv[3])
 
-    if(len(sys.argv) == 3):
-        buildProbabilities(data[sys.argv[2]:sys.argv[3]])
-    else:
-        buildProbabilities(data)
+    buildProbabilities(data[slice1:slice2])
     
 
