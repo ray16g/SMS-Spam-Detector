@@ -84,13 +84,11 @@ def buildProbabilities(data):
     np.save('./data/SpamProbabilities', spamProb)
 
 if __name__ == "__main__":
+    if(len(sys.argv) == 1):
+        print("Error: missing parameter")
+        sys.exit(1)
     data = load_data(sys.argv[1])
-    slice1 = 0
-    slice2 = len(data)-1
-    if(len(sys.argv) == 4):
-        slice1 = int(sys.argv[2])
-        slice2 = int(sys.argv[3])
 
-    buildProbabilities(data[slice1:slice2])
+    buildProbabilities(data)
     
 

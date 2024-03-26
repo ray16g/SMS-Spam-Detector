@@ -2,6 +2,7 @@ import numpy as np
 from build import load_data
 from build import preprocess
 from build import processMessages
+from build import buildProbabilities
 
 import sys
 
@@ -19,6 +20,29 @@ def classify(vocab, hamProb, spamProb, testData):
 
     return testSpam > testHam
 
+def computeAccuracy(predictions, actual):
+    return (predictions == actual).sum() / len(predictions)
+
+# Testing accuracy
+def kFoldCrossValidation(data, k):
+    accuracies = []
+    step = int(len(data)/k)
+
+    for i in range(k):
+        trainFeat = np.append(data[:i*step], data[i*step+step+1:], axis = 0)
+        testFeat = data[i*step:i*step+step]
+        actual = data[i*step:i*step+step][:,0] == 'spam'
+        buildProbabilities(trainFeat)
+
+        vocab = np.load('./data/Vocab.npy', allow_pickle=True)
+        hamProb = np.load('./data/HamProbabilities.npy', allow_pickle=True)
+        spamProb = np.load('./data/SpamProbabilities.npy', allow_pickle=True)
+        predictions = classify(vocab[()], hamProb, spamProb, testFeat[:,1])
+        accuracies.append(computeAccuracy(predictions, actual))
+
+    return np.array(accuracies).sum()/len(accuracies)
+
+
 if __name__ == "__main__": 
     testData = load_data(sys.argv[1])
 
@@ -26,17 +50,10 @@ if __name__ == "__main__":
     hamProb = np.load('./data/HamProbabilities.npy', allow_pickle=True)
     spamProb = np.load('./data/SpamProbabilities.npy', allow_pickle=True)
 
-    slice1 = 0
-    slice2 = len(testData)-1
-    if(len(sys.argv) == 4):
-        slice1 = int(sys.argv[2])
-        slice2 = int(sys.argv[3])
-
-    predictions = classify(vocab[()], hamProb, spamProb, testData[slice1:slice2][:,1])
-    actual = testData[slice1:slice2][:,0] == 'spam'
+    # predictions = classify(vocab[()], hamProb, spamProb, testData[slice1:slice2][:,1])
+    # actual = testData[slice1:slice2][:,0] == 'spam'
     
-    print((predictions == actual).sum() / len(predictions))
-    print((predictions == actual).sum(),len(predictions))
+    print(kFoldCrossValidation(testData, 10))
 
 
     
