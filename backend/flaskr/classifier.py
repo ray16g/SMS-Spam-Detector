@@ -34,18 +34,18 @@ def kFoldCrossValidation(data, k):
         actual = data[i*step:i*step+step][:,0] == 'spam'
         buildProbabilities(trainFeat)
 
-        vocab = np.load('/backend/flaskr/data/Vocab.npy', allow_pickle=True)
-        hamProb = np.load('/backend/flaskr/data/HamProbabilities.npy', allow_pickle=True)
-        spamProb = np.load('/backend/flaskr/data/SpamProbabilities.npy', allow_pickle=True)
+        vocab = np.load('./backend/flaskr/data/Vocab.npy', allow_pickle=True)
+        hamProb = np.load('./backend/flaskr/data/HamProbabilities.npy', allow_pickle=True)
+        spamProb = np.load('./backend/flaskr/data/SpamProbabilities.npy', allow_pickle=True)
         predictions = classify(vocab[()], hamProb, spamProb, testFeat[:,1])
         accuracies.append(computeAccuracy(predictions, actual))
 
     return np.array(accuracies).sum()/len(accuracies)
 
 def classifyText(text):
-    vocab = np.load('/backend/flaskr/data/Vocab.npy', allow_pickle=True)
-    hamProb = np.load('/backend/flaskr/data/HamProbabilities.npy', allow_pickle=True)
-    spamProb = np.load('/backend/flaskr/data/SpamProbabilities.npy', allow_pickle=True)
+    vocab = np.load('./backend/flaskr/data/Vocab.npy', allow_pickle=True)
+    hamProb = np.load('./backend/flaskr/data/HamProbabilities.npy', allow_pickle=True)
+    spamProb = np.load('./backend/flaskr/data/SpamProbabilities.npy', allow_pickle=True)
 
     testMessages = np.array([text])
 
