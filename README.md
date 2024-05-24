@@ -2,6 +2,8 @@
 
 ### This is a text spam detector created using a Bernoulli Naive Bayes Classifier integrated into a web application using Flask.
 
+Live Demo: https://sms-spam-detector-5c1m.onrender.com/
+
 ## Installation
 
 CD into the backend directory, initialize environment and activate (file will be different depending on OS)
