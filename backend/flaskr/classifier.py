@@ -42,16 +42,50 @@ def kFoldCrossValidation(data, k):
 
     return np.array(accuracies).sum()/len(accuracies)
 
-
-if __name__ == "__main__": 
-    testData = load_data(sys.argv[1])
-
+def classifyText(text):
     vocab = np.load('./data/Vocab.npy', allow_pickle=True)
     hamProb = np.load('./data/HamProbabilities.npy', allow_pickle=True)
     spamProb = np.load('./data/SpamProbabilities.npy', allow_pickle=True)
 
-    # predictions = classify(vocab[()], hamProb, spamProb, testData[slice1:slice2][:,1])
-    # actual = testData[slice1:slice2][:,0] == 'spam'
-    
-    print(kFoldCrossValidation(testData, 10))
+    testMessages = np.array([text])
+
+    processedMessages = preprocess(testMessages)
+    vocab = vocab[()]
+    messageArray = processMessages(vocab, processedMessages)
+
+    testHam = np.tile(hamProb, (len(messageArray), 1))
+    testHam[messageArray == 0] = 1 - testHam[messageArray == 0]
+    testHam = np.log(testHam).sum(axis = 1)
+
+    testSpam = np.tile(spamProb, (len(messageArray),1))
+    testSpam[messageArray == 0] = 1 - testSpam[messageArray == 0]
+    testSpam = np.log(testSpam).sum(axis=1)
+
+    classes = [None] * len(processedMessages[0])
+    for i in range(len(processedMessages[0])):
+        if processedMessages[0][i] in vocab:
+            classes[i] = spamProb[vocab[processedMessages[0][i]]] - hamProb[vocab[processedMessages[0][i]]]
+        else:
+            classes[i] = 0
+
+    return {
+        'spam': (testSpam - testHam)[0],
+        'text': processedMessages[0],
+        'class': classes
+    }
+
+if __name__ == '__main__':
+    msg = "BANK OF AMERICA: Your transaction of $5,500 will be automatically approved. To deny the transfer or report suspicious activity please click [link] to re-activate your BANK OF AMERICA account and continue using it."
+    print(classifyText(msg))
+
+#     testData = load_data(sys.argv[1])
+
+#     vocab = np.load('./data/Vocab.npy', allow_pickle=True)
+#     hamProb = np.load('./data/HamProbabilities.npy', allow_pickle=True)
+#     spamProb = np.load('./data/SpamProbabilities.npy', allow_pickle=True)
+
+#     # predictions = classify(vocab[()], hamProb, spamProb, testData[slice1:slice2][:,1])
+#     # actual = testData[slice1:slice2][:,0] == 'spam'
+#     print(spamProb)
+#     print(hamProb)
 

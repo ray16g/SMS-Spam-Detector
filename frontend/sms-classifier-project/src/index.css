@@ -17,9 +17,11 @@ a:hover {
   opacity: 100%;
   transition: 0.2s;
 }
-
 body {
   margin: 0;
+}
+
+.container {
   display: flex;
   place-items: center;
   min-width: 320px;
@@ -37,13 +39,13 @@ body {
   text-decoration: none;
 }
 
-.link {
+a {
   text-decoration: none;
   color: #7eddd3;
   transition: 0.2s;
 }
 
-.link:hover {
+a:hover {
   transition: 0.2s;
   opacity: 50%;
 }
@@ -51,7 +53,12 @@ body {
 .input {
   margin: 0 auto;
   width: 30%;
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
 }
+
 
 .text-input {
   width: 100%;
@@ -66,13 +73,75 @@ body {
   outline-style: solid;
   overflow-y: scroll;
   box-sizing: border-box;
-  padding: 5px;
+  padding: 1rem;
+  transition: 0.1s;
 }
 
 .text-input:focus {
   outline-color: #e3e6ebd2;
+  transition: 0.1s;
 }
 ::-webkit-scrollbar {
   width: 0;
   background: transparent;  
+}
+
+.btn {
+  border-width: 0;
+  background-color: #242527;
+  border-radius: 10px;
+  width: 50%;
+  height: 2.25rem;
+  transition: 0.15s;
+}
+
+.btn:hover {
+  background-color: #c9c9c9;
+  color: black;
+  cursor: pointer;
+}
+
+.btn:active {
+  background-color: rgb(79, 80, 82);
+}
+
+.error-alert {
+  color: red;
+  margin-top: -0.85rem;
+  margin-bottom: -0.7rem;
+}
+
+.error-alert:after {
+  content: '\200b'
+}
+
+/*y*/
+
+.info {
+  margin: 0 auto;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+}
+
+.classify {
+  font-size: 2.5rem;
+  margin-top: -0.5rem;
+  margin-bottom: -0.5rem;
+  font-weight: bold;
+  align-self: center;
+}
+
+.preprocessing-list li
+{
+  margin-bottom: 1rem;
+}
+
+.mid {
+  align-self: center;
+}
+
+.bold {
+  font-weight: bold;
 }

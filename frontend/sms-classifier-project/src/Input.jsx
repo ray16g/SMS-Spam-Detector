@@ -2,13 +2,28 @@ import React from 'react'
 import { useState } from 'react'
 import './index.css'
 
-const Input = ({setText}) => {
+const Input = ({handleSubmission}) => {
 
     const [input, setInput] = useState("")
-
+    const [errorMessage, setErrorMessage] = useState("")
+    
     function handleTextChange(e)
     {
         setInput(e.target.value)
+    }
+
+    function handleClick(e)
+    {
+        e.preventDefault()
+        if(input.length < 10)
+        {
+            setErrorMessage("Minimum 10 characters!")
+        }
+        else
+        {
+            setErrorMessage("")
+            handleSubmission(input)
+        }
     }
 
     return (
@@ -23,8 +38,10 @@ const Input = ({setText}) => {
                 className='text-input'
                 value={input}
                 onChange={handleTextChange}
+                placeholder='Enter input...'
             />
-            <button>Classify</button>
+            <div className="error-alert">{errorMessage}</div>
+            <button className="btn" onClick={handleClick}>Classify</button>
         </div>
     )
 }
